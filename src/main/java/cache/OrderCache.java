@@ -6,10 +6,10 @@ import utils.Config;
 
 import java.util.ArrayList;
 
-//TODO: Build this cache and use it.
+//TODO: Build this cache and use it. (umiddelbart færdig)
 public class OrderCache {
 
-    // List of products
+    // List of orders
     private ArrayList<LineItem> lineItems;
 
     // Time cache should live
