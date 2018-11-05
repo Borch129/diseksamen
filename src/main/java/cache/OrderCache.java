@@ -1,7 +1,7 @@
 package cache;
 
 import controllers.OrderController;
-import model.LineItem;
+import model.Order;
 import utils.Config;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class OrderCache {
 
     // List of orders
-    private ArrayList<LineItem> lineItems;
+    private ArrayList<Order> orders;
 
     // Time cache should live
     private long ttl;
@@ -22,24 +22,24 @@ public class OrderCache {
         this.ttl = Config.getProductTtl();
     }
 
-    public ArrayList<LineItem> getOrders (Boolean forceUpdate) {
+    public ArrayList<Order> getOrders (Boolean forceUpdate) {
 
         // If we whis to clear cache, we can set force update.
         // Otherwise we look at the age of the cache and figure out if we should update.
         // If the list is empty we also check for new products
         if (forceUpdate
                 || ((this.created + this.ttl) >= (System.currentTimeMillis() / 1000L))
-                || this.lineItems.isEmpty()) {
+                || this.orders.isEmpty()) {
 
-            // Get products from controller, since we wish to update.
-            ArrayList<LineItem> lineItems = OrderController.getOrders();
+            // Get orders from controller, since we wish to update.
+            ArrayList<Order> orders = OrderController.getOrders();
 
             // Set products for the instance and set created timestamp
-            this.lineItems = lineItems;
+            this.orders = orders;
             this.created = System.currentTimeMillis() / 1000L;
         }
 
         // Return the documents
-        return this.lineItems;
+        return this.orders;
     }
 }

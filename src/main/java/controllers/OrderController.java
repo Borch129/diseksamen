@@ -70,7 +70,7 @@ public class OrderController {
    *
    * @return
    */
-  public static ArrayList<LineItem> getOrders() {
+  public static ArrayList<Order> getOrders() {
 
     if (dbCon == null) {
       dbCon = new DatabaseController();
