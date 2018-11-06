@@ -1,13 +1,10 @@
 package com.cbsexam;
 
+import cache.UserCache;
 import com.google.gson.Gson;
 import controllers.UserController;
 import java.util.ArrayList;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import model.User;
@@ -16,7 +13,8 @@ import utils.Log;
 
 @Path("user")
 public class UserEndpoints {
-
+    // laves så der ikke laves en ny cache hver gang men der kaldes en tidligere cache
+  static UserCache userCache = new UserCache();
   /**
    * @param idUser
    * @return Responses
@@ -28,11 +26,11 @@ public class UserEndpoints {
     // Use the ID to get the user from the controller.
     User user = UserController.getUser(idUser);
 
-    // TODO: Add Encryption to JSON (færdig)
+    // TODO: Add Encryption to JSON (færdig, men udkommenteret)
     // Convert the user object to json in order to return the object
     String json = new Gson().toJson(user);
 
-    json = Encryption.encryptDecryptXOR(json);
+    //json = Encryption.encryptDecryptXOR(json);
 
     // Return the user with the status code 200
     // TODO: What should happen if something breaks down?
@@ -50,11 +48,11 @@ public class UserEndpoints {
     // Get a list of users
     ArrayList<User> users = UserController.getUsers();
 
-    // TODO: Add Encryption to JSON (færdig)
+    // TODO: Add Encryption to JSON (færdig, men udkommenteret)
     // Transfer users to json in order to return it to the user
     String json = new Gson().toJson(users);
 
-    json = Encryption.encryptDecryptXOR(json);
+    //json = Encryption.encryptDecryptXOR(json);
     // Return the users with the status code 200
     return Response.status(200).type(MediaType.APPLICATION_JSON).entity(json).build();
   }
