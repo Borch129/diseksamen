@@ -19,7 +19,7 @@ public class OrderCache {
     private long created;
 
     public OrderCache() {
-        this.ttl = Config.getProductTtl();
+        this.ttl = Config.getOrderTtl();
     }
 
     public ArrayList<Order> getOrders (Boolean forceUpdate) {
