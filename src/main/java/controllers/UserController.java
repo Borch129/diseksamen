@@ -108,14 +108,14 @@ public class UserController {
     }
 
     // Insert the user in the DB
-    // TODO: Hash the user password before saving it.
+    // TODO: Hash the user password before saving it. (umiddelbart færdigt)
     int userID = dbCon.insert(
         "INSERT INTO user(first_name, last_name, password, email, created_at) VALUES('"
             + user.getFirstname()
             + "', '"
             + user.getLastname()
             + "', '"
-            + Hashing.sha(user.getPassword())
+            + Hashing.sha(user.getPassword()) //tilføjet hash til password inden det gemmes.
             + "', '"
             + user.getEmail()
             + "', "
@@ -132,5 +132,24 @@ public class UserController {
 
     // Return user
     return user;
+  }
+
+  // laver en funktion som kan logge en User ind.
+   public static User login (User user){
+
+    if (dbCon == null) {
+       dbCon = new DatabaseController();
+
+      String sql = "SELECT * FROM user";
+        email = "" + user.getEmail()
+        password  = "" + user.getPassword()
+
+      rs = dbCon.executeQuery(sql);
+
+      if (rs.next()) {
+        //return en token
+      }else
+        return "";
+
   }
 }

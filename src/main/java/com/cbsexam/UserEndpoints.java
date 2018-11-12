@@ -8,7 +8,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import model.User;
-import utils.Encryption;
 import utils.Log;
 
 @Path("user")
@@ -25,6 +24,7 @@ public class UserEndpoints {
 
     // Use the ID to get the user from the controller.
     User user = UserController.getUser(idUser);
+
 
     // TODO: Add Encryption to JSON (færdig, men udkommenteret)
     // Convert the user object to json in order to return the object
@@ -46,7 +46,9 @@ public class UserEndpoints {
     Log.writeLog(this.getClass().getName(), this, "Get all users", 0);
 
     // Get a list of users
-    ArrayList<User> users = UserController.getUsers();
+    //ArrayList<User> users = UserController.getUsers();
+
+      ArrayList<User> users = userCache.getUsers(false);
 
     // TODO: Add Encryption to JSON (færdig, men udkommenteret)
     // Transfer users to json in order to return it to the user
@@ -84,10 +86,18 @@ public class UserEndpoints {
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response loginUser(String x) {
+  public Response loginUser(String body) {
+
+      String user = new Gson().toJson(body, User.class);
+      UserController.class.login(user);
+
+      if (body.equals(email) && body.equals(password)) {
+          return Response.status(200).entity("Login granted").build();
+      }else
+          return Response.status(400).entity("Login failed").build();
 
     // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented yet").build();
+    // return Response.status(400).entity("Endpoint not implemented yet").build();
   }
 
   // TODO: Make the system able to delete users
