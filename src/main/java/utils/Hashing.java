@@ -7,13 +7,15 @@ import org.bouncycastle.util.encoders.Hex;
 
 public final class Hashing {
 
+  static long dato = System.currentTimeMillis();
+
   // TODO: You should add a salt and make this secure
   public static String md5(String rawString) {
     try {
 
       // We load the hashing algoritm we wish to use.
       MessageDigest md = MessageDigest.getInstance("MD5");
-      rawString = rawString + "RANDOM"; //random tekst i ""
+      rawString = rawString + dato; //random dato/tid når man laver en bruger som giver en unik salt til koden. Kan dog ske at to laver bruger på samme millisekund...
 
       // We convert to byte array
       byte[] byteArray = md.digest(rawString.getBytes());
@@ -43,7 +45,7 @@ public final class Hashing {
     try {
       // We load the hashing algoritm we wish to use.
       MessageDigest digest = MessageDigest.getInstance("SHA-256");
-      rawString = rawString + "RANDOM";
+      rawString = rawString + dato;
 
       // We convert to byte array
       byte[] hash = digest.digest(rawString.getBytes(StandardCharsets.UTF_8));
