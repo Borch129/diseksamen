@@ -3,17 +3,23 @@ package com.cbsexam;
 import cache.UserCache;
 import com.google.gson.Gson;
 import controllers.UserController;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import jdk.nashorn.internal.parser.Token;
 import model.User;
 import utils.Log;
 
 @Path("user")
 public class UserEndpoints {
+
     // laves så der ikke laves en ny cache hver gang men der kaldes en tidligere cache
   static UserCache userCache = new UserCache();
+
   /**
    * @param idUser
    * @return Responses
@@ -86,13 +92,14 @@ public class UserEndpoints {
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response loginUser(String body) {
+  public Response loginUser(String body) throws SQLException {
 
-      String user = new Gson().toJson(body, User.class);
-      UserController.class.login(user);
+      User user = new Gson().fromJson(body, User.class);
 
-      if (body.equals(email) && body.equals(password)) {
-          return Response.status(200).entity("Login granted").build();
+      String token = UserController.login(user);
+
+      if (token !="") {
+          return Response.status(200).entity(token).build();
       }else
           return Response.status(400).entity("Login failed").build();
 
@@ -101,7 +108,29 @@ public class UserEndpoints {
   }
 
   // TODO: Make the system able to delete users
-  public Response deleteUser(String x) {
+  public Response deleteUser(String token) {
+    /*
+    boolean deleted = UserController.deleteUser(token)
+
+    if(deleted) return response 200
+    return response 400
+     */
+
+    /* inde i den userController
+
+    Delete user metode, som tager en string
+    den skal kalde nedenstående med den token, som den får med.
+    try {
+    DecodedJWT jwt = JWT.decode(token);
+} catch (JWTDecodeException exception){
+    //Invalid token
+}
+    på dit jwt-obect, der kan du kalde id =  jwt.getClaim("userId").asInt()
+    og så kan du generer dit sql statement med
+    sql = DELETE FROM user WHERE id = id
+    Dbconn.update(sql)   
+
+     */
 
     // Return a response with status 200 and JSON as type
     return Response.status(400).entity("Endpoint not implemented yet").build();

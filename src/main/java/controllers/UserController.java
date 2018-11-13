@@ -3,6 +3,10 @@ package controllers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 import model.User;
 import utils.Hashing;
 import utils.Log;
@@ -135,21 +139,38 @@ public class UserController {
   }
 
   // laver en funktion som kan logge en User ind.
-   public static User login (User user){
+  public static String login (User user) throws SQLException {
 
     if (dbCon == null) {
-       dbCon = new DatabaseController();
+      dbCon = new DatabaseController();
+    }
+    String sql = "SELECT * FROM user WHERE email = '" + user.getEmail() + "' AND password = '" + user.getPassword() + "'";
 
-      String sql = "SELECT * FROM user";
-        email = "" + user.getEmail()
-        password  = "" + user.getPassword()
-
-      rs = dbCon.executeQuery(sql);
-
-      if (rs.next()) {
-        //return en token
-      }else
+    ResultSet rs = dbCon.query(sql);
+    User foundUser = null;
+    try {
+      // Loop through DB Data
+      while (rs.next()) {
+        foundUser =
+                new User(
+                        rs.getInt("id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("password"),
+                        rs.getString("email"));
+      }
+      try {
+        Algorithm algorithm = Algorithm.HMAC256("secret");
+        String token = JWT.create()
+                .withIssuer("auth0")
+                .withClaim("userId", foundUser.getId())
+                .sign(algorithm);
+        return token;
+      } catch (JWTCreationException exception){
         return "";
-
+      }
+    } catch (Exception e) {
+      return "";
+    }
   }
 }
