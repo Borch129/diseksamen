@@ -7,9 +7,12 @@ import java.util.ArrayList;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import model.User;
 import utils.Hashing;
 import utils.Log;
+
 
 public class UserController {
 
@@ -37,12 +40,12 @@ public class UserController {
       // Get first object, since we only have one
       if (rs.next()) {
         user =
-            new User(
-                rs.getInt("id"),
-                rs.getString("first_name"),
-                rs.getString("last_name"),
-                rs.getString("password"),
-                rs.getString("email"));
+                new User(
+                        rs.getInt("id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("password"),
+                        rs.getString("email"));
 
         // return the create object
         return user;
@@ -80,12 +83,12 @@ public class UserController {
       // Loop through DB Data
       while (rs.next()) {
         User user =
-            new User(
-                rs.getInt("id"),
-                rs.getString("first_name"),
-                rs.getString("last_name"),
-                rs.getString("password"),
-                rs.getString("email"));
+                new User(
+                        rs.getInt("id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("password"),
+                        rs.getString("email"));
 
         // Add element to list
         users.add(user);
@@ -114,22 +117,22 @@ public class UserController {
     // Insert the user in the DB
     // TODO: Hash the user password before saving it. (umiddelbart færdigt)
     int userID = dbCon.insert(
-        "INSERT INTO user(first_name, last_name, password, email, created_at) VALUES('"
-            + user.getFirstname()
-            + "', '"
-            + user.getLastname()
-            + "', '"
-            + Hashing.sha(user.getPassword()) //tilføjet hash til password inden det gemmes.
-            + "', '"
-            + user.getEmail()
-            + "', "
-            + user.getCreatedTime()
-            + ")");
+            "INSERT INTO user(first_name, last_name, password, email, created_at) VALUES('"
+                    + user.getFirstname()
+                    + "', '"
+                    + user.getLastname()
+                    + "', '"
+                    + Hashing.sha(user.getPassword()) //tilføjet hash til password inden det gemmes.
+                    + "', '"
+                    + user.getEmail()
+                    + "', "
+                    + user.getCreatedTime()
+                    + ")");
 
     if (userID != 0) {
       //Update the userid of the user before returning
       user.setId(userID);
-    } else{
+    } else {
       // Return null if user has not been inserted into database
       return null;
     }
@@ -139,7 +142,7 @@ public class UserController {
   }
 
   // laver en funktion som kan logge en User ind.
-  public static String login (User user) throws SQLException {
+  public static String login(User user) throws SQLException {
 
     if (dbCon == null) {
       dbCon = new DatabaseController();
@@ -166,11 +169,43 @@ public class UserController {
                 .withClaim("userId", foundUser.getId())
                 .sign(algorithm);
         return token;
-      } catch (JWTCreationException exception){
+      } catch (JWTCreationException exception) {
         return "";
       }
     } catch (Exception e) {
       return "";
     }
   }
+
+  public static Boolean deleteUser(String token) {
+/* inde i den userController
+
+    Delete user metode, som tager en string
+    den skal kalde nedenstående med den token, som den får med.
+    try {
+    DecodedJWT jwt = JWT.decode(token);
+} catch (JWTDecodeException exception){
+    //Invalid token
+}
+    //på dit jwt-object, der kan du kalde id =  jwt.getClaim("userId").asInt()
+   // og så kan du generer dit sql statement med
+    String sql = "DELETE FROM user WHERE id" = id;
+    dbcon.update(sql);
+*/
+    if (dbCon == null) {
+      dbCon = new DatabaseController();
+
+    try {
+      DecodedJWT jwt = JWT.decode(token);
+      int id = jwt.getClaim("userId").asInt();
+
+      String sql = "DELETE FROM user WHERE id= '" + id + "'";
+      dbCon.insert(sql);
+      return true;
+    } catch (JWTDecodeException exception) {
+      return null; //Invalid token
+    }
+  }
+  return false;
+}
 }

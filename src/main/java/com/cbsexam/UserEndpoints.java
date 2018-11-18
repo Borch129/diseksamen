@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import jdk.nashorn.internal.parser.Token;
 import model.User;
 import utils.Log;
 
@@ -52,9 +50,9 @@ public class UserEndpoints {
     Log.writeLog(this.getClass().getName(), this, "Get all users", 0);
 
     // Get a list of users
-    //ArrayList<User> users = UserController.getUsers();
+    // ArrayList<User> users = UserController.getUsers();
 
-      ArrayList<User> users = userCache.getUsers(false);
+    ArrayList<User> users = userCache.getUsers(false);
 
     // TODO: Add Encryption to JSON (færdig, men udkommenteret)
     // Transfer users to json in order to return it to the user
@@ -98,23 +96,27 @@ public class UserEndpoints {
 
       String token = UserController.login(user);
 
-      if (token !="") {
-          return Response.status(200).entity(token).build();
-      }else
-          return Response.status(400).entity("Login failed").build();
+    if (token !="") {
+      return Response.status(200).entity(token).build();
+    }else
+      return Response.status(400).entity("Login failed").build();
 
     // Return a response with status 200 and JSON as type
     // return Response.status(400).entity("Endpoint not implemented yet").build();
   }
 
   // TODO: Make the system able to delete users
-  public Response deleteUser(String token) {
-    /*
-    boolean deleted = UserController.deleteUser(token)
+  @DELETE
+  @Path("/{userId}/{token}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response deleteUser(@PathParam("userId")int userId, @PathParam("token") String token) {
 
-    if(deleted) return response 200
-    return response 400
-     */
+    Boolean deleted = UserController.deleteUser(token);
+
+    if(deleted) {
+      return Response.status(200).entity("User deleted").build();
+    }else
+      return Response.status(400).entity("User not deleted").build();
 
     /* inde i den userController
 
@@ -125,15 +127,11 @@ public class UserEndpoints {
 } catch (JWTDecodeException exception){
     //Invalid token
 }
-    på dit jwt-obect, der kan du kalde id =  jwt.getClaim("userId").asInt()
-    og så kan du generer dit sql statement med
-    sql = DELETE FROM user WHERE id = id
-    Dbconn.update(sql)   
-
-     */
-
-    // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented yet").build();
+    //på dit jwt-object, der kan du kalde id =  jwt.getClaim("userId").asInt()
+   // og så kan du generer dit sql statement med
+    String sql = "DELETE FROM user WHERE id" = id;
+    Dbcon.update(sql);
+*/
   }
 
   // TODO: Make the system able to update users
