@@ -120,9 +120,10 @@ public class UserEndpoints {
 
   }
 
-  // TODO: Make the system able to update users
+  // TODO: Make the system able to update users (umiddelbart færdig)
+  @PUT
   @Path("/{userId}/{token}")
-  public Response updateUser(@PathParam("token") String token, String body) {
+  public Response updateUser( @PathParam("token") String token, String body) {
 
     User user = new Gson().fromJson(body, User.class);
 
