@@ -86,7 +86,7 @@ public class UserEndpoints {
     }
   }
 
-  // TODO: Make the system able to login users and assign them a token to use throughout the system.
+  // TODO: Make the system able to login users and assign them a token to use throughout the system. (umiddelbart færdig)
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -105,7 +105,7 @@ public class UserEndpoints {
     // return Response.status(400).entity("Endpoint not implemented yet").build();
   }
 
-  // TODO: Make the system able to delete users
+  // TODO: Make the system able to delete users (umiddelbart færdig)
   @DELETE
   @Path("/{userId}/{token}")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -118,26 +118,19 @@ public class UserEndpoints {
     }else
       return Response.status(400).entity("User not deleted").build();
 
-    /* inde i den userController
-
-    Delete user metode, som tager en string
-    den skal kalde nedenstående med den token, som den får med.
-    try {
-    DecodedJWT jwt = JWT.decode(token);
-} catch (JWTDecodeException exception){
-    //Invalid token
-}
-    //på dit jwt-object, der kan du kalde id =  jwt.getClaim("userId").asInt()
-   // og så kan du generer dit sql statement med
-    String sql = "DELETE FROM user WHERE id" = id;
-    Dbcon.update(sql);
-*/
   }
 
   // TODO: Make the system able to update users
-  public Response updateUser(String x) {
+  @Path("/{userId}/{token}")
+  public Response updateUser(@PathParam("token") String token, String body) {
 
-    // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented yet").build();
+    User user = new Gson().fromJson(body, User.class);
+
+    Boolean updated = UserController.updateUser(user, token);
+
+    if (updated){
+      return Response.status(200).entity("User is updated").build();
+    }else
+    return Response.status(400).entity("Something went wrong, could not update user").build();
   }
 }

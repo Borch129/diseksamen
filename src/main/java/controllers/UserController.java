@@ -1,5 +1,6 @@
 package controllers;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -178,20 +179,7 @@ public class UserController {
   }
 
   public static Boolean deleteUser(String token) {
-/* inde i den userController
 
-    Delete user metode, som tager en string
-    den skal kalde nedenstående med den token, som den får med.
-    try {
-    DecodedJWT jwt = JWT.decode(token);
-} catch (JWTDecodeException exception){
-    //Invalid token
-}
-    //på dit jwt-object, der kan du kalde id =  jwt.getClaim("userId").asInt()
-   // og så kan du generer dit sql statement med
-    String sql = "DELETE FROM user WHERE id" = id;
-    dbcon.update(sql);
-*/
     if (dbCon == null) {
       dbCon = new DatabaseController();
 
@@ -208,4 +196,38 @@ public class UserController {
   }
   return false;
 }
+public static Boolean updateUser(User user, String token){
+
+    if (dbCon == null) {
+      dbCon = new DatabaseController();
+    }
+    try{
+      DecodedJWT jwt = JWT.decode(token);
+      int id = jwt.getClaim("userId").asInt();
+
+      try {
+        PreparedStatement updateUser = dbCon.getConnection().prepareStatement("UPDATE user SET" +
+                "first_name = ?, last_name = ?, password = ?, email = ? WHERE id=? ");
+        updateUser.setString(1, user.getFirstname());
+        updateUser.setString(2, user.getLastname());
+        updateUser.setString(3, user.getPassword());
+        updateUser.setString(4, user.getEmail());
+        updateUser.setInt(5, id);
+
+        int rowsAffected = updateUser.executeUpdate();
+
+        if (rowsAffected == 1){
+          return true;
+        }
+
+      }catch (SQLException exception){
+        exception.printStackTrace();
+      }
+    }catch (JWTDecodeException exception){
+      exception.printStackTrace();
+    }
+    return false;
+  }
 }
+
+
