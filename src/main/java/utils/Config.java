@@ -9,71 +9,77 @@ import java.io.InputStreamReader;
 
 public final class Config {
 
-  private static String DATABASE_HOST;
-  private static int DATABASE_PORT;
-  private static String DATABASE_USERNAME;
-  private static String DATABASE_PASSWORD;
-  private static String DATABASE_NAME;
-  private static boolean ENCRYPTION;
-  private static String SOLR_HOST;
-  private static int SOLR_PORT;
-  private static String SOLR_PATH;
-  private static String SOLR_CORE;
-  private static long PRODUCT_TTL;
-  private static long ORDER_TTL;
-  private static long USER_TTL;
+    private static String DATABASE_HOST;
+    private static int DATABASE_PORT;
+    private static String DATABASE_USERNAME;
+    private static String DATABASE_PASSWORD;
+    private static String DATABASE_NAME;
+    private static boolean ENCRYPTION;
+    private static String SOLR_HOST;
+    private static int SOLR_PORT;
+    private static String SOLR_PATH;
+    private static String SOLR_CORE;
+    private static long PRODUCT_TTL;
+    private static long ORDER_TTL;
+    private static long USER_TTL;
+    private static String KEY;
 
-  public static long getProductTtl() {
-    return PRODUCT_TTL;
-  }
+    public static long getProductTtl() {
+        return PRODUCT_TTL;
+    }
 
-  public static long getOrderTtl() {
-    return ORDER_TTL;
-  }
+    public static long getOrderTtl() {
+        return ORDER_TTL;
+    }
 
-  public static long getUserTtl() {
-    return USER_TTL;
-  }
+    public static long getUserTtl() {
+        return USER_TTL;
+    }
 
-  public static String getDatabaseHost() {
-    return DATABASE_HOST;
-  }
+    public static String getDatabaseHost() {
+        return DATABASE_HOST;
+    }
 
-  public static int getDatabasePort() {
-    return DATABASE_PORT;
-  }
+    public static int getDatabasePort() {
+        return DATABASE_PORT;
+    }
 
-  public static String getDatabaseUsername() {
-    return DATABASE_USERNAME;
-  }
+    public static String getDatabaseUsername() {
+        return DATABASE_USERNAME;
+    }
 
-  public static String getDatabasePassword() {
-    return DATABASE_PASSWORD;
-  }
+    public static String getDatabasePassword() {
+        return DATABASE_PASSWORD;
+    }
 
-  public static String getDatabaseName() {
-    return DATABASE_NAME;
-  }
+    public static String getDatabaseName() {
+        return DATABASE_NAME;
+    }
 
-  public static Boolean getEncryption() {
-    return ENCRYPTION;
-  }
+    public static Boolean getEncryption() {
+        return ENCRYPTION;
+    }
 
-  public static String getSolrHost() {
-    return SOLR_HOST;
-  }
+    public static String getSolrHost() {
+        return SOLR_HOST;
+    }
 
-  public static int getSolrPort() {
-    return SOLR_PORT;
-  }
+    public static int getSolrPort() {
+        return SOLR_PORT;
+    }
 
-  public static String getSolrPath() {
-    return SOLR_PATH;
-  }
+    public static String getSolrPath() {
+        return SOLR_PATH;
+    }
 
-  public static String getSolrCore() {
-    return SOLR_CORE;
-  }
+    public static String getSolrCore() {
+        return SOLR_CORE;
+    }
+
+    public static String getKey() {
+        return KEY;
+    }
+
 
   public static void initializeConfig() throws IOException {
 
@@ -111,5 +117,6 @@ public final class Config {
     PRODUCT_TTL = json.get("PRODUCT_TTL").getAsLong();
     ORDER_TTL = json.get("ORDER_TTL").getAsLong();
     USER_TTL = json.get("USER_TTL").getAsLong();
+    KEY = json.get("KEY").getAsString();
   }
 }
