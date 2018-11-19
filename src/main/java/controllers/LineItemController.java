@@ -27,7 +27,7 @@ public class LineItemController {
 
     // Do the query and initialize an empty list for the results
     ResultSet rs = dbCon.query(sql);
-    ArrayList<LineItem> items = new ArrayList<>();
+    ArrayList<LineItem> items = new ArrayList<>(); 
 
     try {
 

@@ -15,8 +15,10 @@ public final class Encryption {
       StringBuilder thisIsEncrypted = new StringBuilder();
 
       // TODO: This is where the magic of XOR is happening. Are you able to explain what is going on?
-      for (int i = 0; i < rawString.length(); i++) {
-        thisIsEncrypted.append((char) (rawString.charAt(i) ^ key[i % key.length]));
+      for (int i = 0; i < rawString.length(); i++) {   //dette er et loop, som går fra i=0 og 1 op (i++) indtil at længden/antal tegn på rawString er nået.
+        thisIsEncrypted.append((char) (rawString.charAt(i) ^ key[i % key.length])); //This is encrypted er et objekt af Stringbuilder som gør det muligt at bruge metoden append,
+                                                                                    // som hver gang der findes et tegn i rawString, tilføjer append (skriv videre /ikke færdig)
+
       }
 
       // We return the encrypted string
