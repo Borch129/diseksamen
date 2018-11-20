@@ -79,7 +79,7 @@ public class OrderController {
       dbCon = new DatabaseController();
     }
 
-    String sql = "SELECT * FROM order";
+    String sql = "SELECT * FROM orders";
 
     ResultSet rs = dbCon.query(sql);
     ArrayList<Order> orders = new ArrayList<Order>();
@@ -138,7 +138,7 @@ public class OrderController {
     // Save the user to the database and save them back to initial order instance
     order.setCustomer(UserController.createUser(order.getCustomer()));
 
-    // TODO: Enable transactions in order for us to not save the order if somethings fails for some of the other inserts. (måske færdig, tjek d. 20)
+    // TODO: Enable transactions in order for us to not save the order if somethings fails for some of the other inserts. (FIX)
 
     Connection connection = dbCon.getConnection();
 

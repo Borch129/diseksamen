@@ -29,15 +29,18 @@ public class UserEndpoints {
     // Use the ID to get the user from the controller.
     User user = UserController.getUser(idUser);
 
+    if (user == null){    //hvis der ikke kan findes en bruger sendes denne status 400 besked tilbage.
+      return Response.status(400).type(MediaType.TEXT_PLAIN).entity("Something went wrong, can't get user").build();
+    }
 
-    // TODO: Add Encryption to JSON (færdig, men udkommenteret)
+    // TODO: Add Encryption to JSON (FIX, men udkommenteret)
     // Convert the user object to json in order to return the object
     String json = new Gson().toJson(user);
 
     //json = Encryption.encryptDecryptXOR(json);
 
     // Return the user with the status code 200
-    // TODO: What should happen if something breaks down?
+    // TODO: What should happen if something breaks down? (umiddelbart færdig)
     return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
   }
 
@@ -54,7 +57,7 @@ public class UserEndpoints {
 
     ArrayList<User> users = userCache.getUsers(false);
 
-    // TODO: Add Encryption to JSON (færdig, men udkommenteret)
+    // TODO: Add Encryption to JSON (FIX, men udkommenteret)
     // Transfer users to json in order to return it to the user
     String json = new Gson().toJson(users);
 
@@ -97,6 +100,9 @@ public class UserEndpoints {
       String token = UserController.login(user);
 
     if (token !="") {
+     // String o = new Gson().toJson(user); //sørger for jeg retunerer en bruger
+
+      //return Response.status(200).entity(o).build();
       return Response.status(200).entity(token).build();
     }else
       return Response.status(400).entity("Login failed").build();
