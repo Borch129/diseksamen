@@ -116,14 +116,14 @@ public class UserController {
     }
 
     // Insert the user in the DB
-    // TODO: Hash the user password before saving it. (umiddelbart færdigt)
+    // TODO: Hash the user password before saving it. (FIX)
     int userID = dbCon.insert(
             "INSERT INTO user(first_name, last_name, password, email, created_at) VALUES('"
                     + user.getFirstname()
                     + "', '"
                     + user.getLastname()
                     + "', '"
-                    + Hashing.sha(user.getPassword()) //tilføjet hash til password inden det gemmes.
+                    + Hashing.sha(user.getPassword()) //tilføjet hash (sha) til password inden det gemmes.
                     + "', '"
                     + user.getEmail()
                     + "', "
@@ -178,14 +178,19 @@ public class UserController {
     }
   }
 
+  /**
+   * Denne metode sletter en bruger hvis at userid i brugertoken er den samme som det userid han vil slette og dermed sig selv.
+   * @param token
+   * @return
+   */
   public static Boolean deleteUser(String token) {
 
     if (dbCon == null) {
-      dbCon = new DatabaseController();
+      dbCon = new DatabaseController(); //tjekker om der er connction til db eller laves der en
 
     try {
       DecodedJWT jwt = JWT.decode(token);
-      int id = jwt.getClaim("userId").asInt();
+      int id = jwt.getClaim("userId").asInt(); //tjekker om userid i brugeren er det samme som i token og sletter dermed brugeren.
 
       String sql = "DELETE FROM user WHERE id= '" + id + "'";
       dbCon.insert(sql);

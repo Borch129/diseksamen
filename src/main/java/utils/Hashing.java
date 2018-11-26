@@ -40,7 +40,7 @@ public final class Hashing {
     return null;
   }
 
-  // TODO: You should add a salt and make this secure (umiddelbart færdig)
+  // TODO: You should add a salt and make this secure (FIX)
   public static String sha(String rawString) {
     try {
       // We load the hashing algoritm we wish to use.

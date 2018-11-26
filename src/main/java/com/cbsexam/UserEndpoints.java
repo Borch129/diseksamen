@@ -87,7 +87,7 @@ public class UserEndpoints {
     }
   }
 
-  // TODO: Make the system able to login users and assign them a token to use throughout the system. (umiddelbart færdig)
+  // TODO: Make the system able to login users and assign them a token to use throughout the system. (FIX)
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -115,7 +115,7 @@ public class UserEndpoints {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response deleteUser(@PathParam("userId")int userId, @PathParam("token") String token) {
 
-    Boolean deleted = UserController.deleteUser(token);
+    Boolean deleted = UserController.deleteUser(token); //hvis boolean true / bruger er slettet i usercontroller så returneres hhv. status 200 eller 400 nedenunder
 
     if(deleted) {
       return Response.status(200).entity("User deleted").build();
