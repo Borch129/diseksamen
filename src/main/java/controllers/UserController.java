@@ -196,27 +196,34 @@ public class UserController {
   }
   return false;
 }
-public static Boolean updateUser(User user, String token){
+
+  /**
+   * Denne metode updaterer en user.
+   * @param user
+   * @param token
+   * @return
+   */
+  public static Boolean updateUser(User user, String token){
 
     if (dbCon == null) {
-      dbCon = new DatabaseController();
+      dbCon = new DatabaseController(); //Laver en connection til db
     }
     try{
-      DecodedJWT jwt = JWT.decode(token);
+      DecodedJWT jwt = JWT.decode(token); //trækker userId ud af token og den sættes til en int, så han kun kan ændre sin egen profil med tilsvarende userId i db
       int id = jwt.getClaim("userId").asInt();
 
       try {
         PreparedStatement updateUser = dbCon.getConnection().prepareStatement("UPDATE user SET" +
-                "first_name = ?, last_name = ?, password = ?, email = ? WHERE id=? ");
+                "first_name = ?, last_name = ?, password = ?, email = ? WHERE id=? "); //laver en sql statement, så man kan ændre i sine data
         updateUser.setString(1, user.getFirstname());
         updateUser.setString(2, user.getLastname());
         updateUser.setString(3, user.getPassword());
         updateUser.setString(4, user.getEmail());
         updateUser.setInt(5, id);
 
-        int rowsAffected = updateUser.executeUpdate();
+        int rowsAffected = updateUser.executeUpdate(); //eksekverer de updateringer user har foretager sig og gemmer i db.
 
-        if (rowsAffected == 1){
+        if (rowsAffected == 1){ //returnerer hvis der er lavet ændringer.
           return true;
         }
 
@@ -226,7 +233,7 @@ public static Boolean updateUser(User user, String token){
     }catch (JWTDecodeException exception){
       exception.printStackTrace();
     }
-    return false;
+    return false; //returnerer flase, hvis der ikke er foretaget nogle ændringer.
   }
 }
 

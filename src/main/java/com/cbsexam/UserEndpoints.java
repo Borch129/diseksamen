@@ -37,10 +37,10 @@ public class UserEndpoints {
     // Convert the user object to json in order to return the object
     String json = new Gson().toJson(user);
 
-    //json = Encryption.encryptDecryptXOR(json);
+    //json = Encryption.encryptDecryptXOR(json); //skal udkommenteres
 
     // Return the user with the status code 200
-    // TODO: What should happen if something breaks down? (umiddelbart færdig)
+    // TODO: What should happen if something breaks down? (FIX)
     return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
   }
 
@@ -53,15 +53,13 @@ public class UserEndpoints {
     Log.writeLog(this.getClass().getName(), this, "Get all users", 0);
 
     // Get a list of users
-    // ArrayList<User> users = UserController.getUsers();
-
-    ArrayList<User> users = userCache.getUsers(false);
+    ArrayList<User> users = userCache.getUsers(false); //gør brug af chachinglayer når jeg henter users
 
     // TODO: Add Encryption to JSON (FIX, men udkommenteret)
     // Transfer users to json in order to return it to the user
     String json = new Gson().toJson(users);
+    //json = Encryption.encryptDecryptXOR(json); //skal udkommenteres
 
-    //json = Encryption.encryptDecryptXOR(json);
     // Return the users with the status code 200
     return Response.status(200).type(MediaType.APPLICATION_JSON).entity(json).build();
   }

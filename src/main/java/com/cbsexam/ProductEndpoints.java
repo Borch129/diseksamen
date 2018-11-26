@@ -12,11 +12,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import model.Product;
-import utils.Encryption;
 
 @Path("product")
 public class ProductEndpoints {
 
+  // laves så der ikke laves en ny cache hver gang men der kaldes en tidligere cache
     static ProductCache productCache = new ProductCache();
   /**
    * @param idProduct
@@ -43,15 +43,14 @@ public class ProductEndpoints {
   @Path("/")
   public Response getProducts() {
 
-    // Call our controller-layer in order to get the order from the DB
-    //ArrayList<Product> products = ProductController.getProducts();
+    // Call our controller-layer in order to get the order from the DB. Productcache-layer implemented to optimize the call.
       ArrayList<Product> products = productCache.getProducts(false);
 
     // TODO: Add Encryption to JSON (FIX, men udkommenteret)
     // We convert the java object to json with GSON library imported in Maven
     String json = new Gson().toJson(products);
+    //json = Encryption.encryptDecryptXOR(json); //skal udkommenteres og laves kommentar til
 
-    //json = Encryption.encryptDecryptXOR(json);
     // Return a response with status 200 and JSON as type
     return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).entity(json).build();
   }

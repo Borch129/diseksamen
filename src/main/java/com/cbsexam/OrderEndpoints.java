@@ -1,7 +1,6 @@
 package com.cbsexam;
 
 import cache.OrderCache;
-import cache.UserCache;
 import com.google.gson.Gson;
 import controllers.OrderController;
 import java.util.ArrayList;
@@ -13,11 +12,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import model.Order;
-import utils.Encryption;
 
 @Path("order")
 public class OrderEndpoints {
 
+  // laves så der ikke laves en ny cache hver gang men der kaldes en tidligere cache
   public static OrderCache orderCache = new OrderCache();
   /**
    * @param idOrder
@@ -45,14 +44,14 @@ public class OrderEndpoints {
   @GET
   @Path("/")
   public Response getOrders() {
-    //Kalder ordercache-laget vi har lavet.
+    //Kalder ordercache-layer vi har lavet, da dette optimere vores kald.
     ArrayList<Order> orders = orderCache.getOrders(false);
 
     // TODO: Add Encryption to JSON (FIX, men udkommenteret)
     // We convert the java object to json with GSON library imported in Maven
     String json = new Gson().toJson(orders);
+    // json = Encryption.encryptDecryptXOR(json); //skal udkommenteres
 
-   // json = Encryption.encryptDecryptXOR(json);
     // Return a response with status 200 and JSON as type
     return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).entity(json).build();
   }
