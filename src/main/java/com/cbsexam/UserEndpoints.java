@@ -4,7 +4,6 @@ import cache.UserCache;
 import com.google.gson.Gson;
 import controllers.UserController;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -91,7 +90,7 @@ public class UserEndpoints {
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response loginUser(String body) throws SQLException {
+  public Response loginUser(String body) {
 
       User user = new Gson().fromJson(body, User.class);
 
@@ -101,7 +100,7 @@ public class UserEndpoints {
      // String o = new Gson().toJson(user); //sørger for jeg retunerer en bruger
 
       //return Response.status(200).entity(o).build();
-      return Response.status(200).entity(token).build();
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(token).build();
     }else
       return Response.status(400).entity("Login failed").build();
 
@@ -111,17 +110,17 @@ public class UserEndpoints {
 
   // TODO: Make the system able to delete users (umiddelbart færdig)
   @DELETE
-  @Path("/{userId}/{token}")
+  @Path("/{token}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response deleteUser(@PathParam("userId")int userId, @PathParam("token") String token) {
+  public Response deleteUser(@PathParam("token") String token) {
 
     Boolean deleted = UserController.deleteUser(token); //hvis boolean true / bruger er slettet i usercontroller så returneres hhv. status 200 eller 400 nedenunder
 
     if(deleted) {
       return Response.status(200).entity("User deleted").build();
-    }else
+    }else {
       return Response.status(400).entity("User not deleted").build();
-
+    }
   }
 
   // TODO: Make the system able to update users (umiddelbart færdig)

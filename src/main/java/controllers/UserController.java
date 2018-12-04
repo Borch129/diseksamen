@@ -116,14 +116,14 @@ public class UserController {
     }
 
     // Insert the user in the DB
-    // TODO: Hash the user password before saving it. (FIX)
+    // TODO: Hash the user password before saving it. (FIX men udkommenteret)
     int userID = dbCon.insert(
             "INSERT INTO user(first_name, last_name, password, email, created_at) VALUES('"
                     + user.getFirstname()
                     + "', '"
                     + user.getLastname()
                     + "', '"
-                    + Hashing.sha(user.getPassword()) //tilføjet hash (sha) til password inden det gemmes.
+                    + user.getPassword() //tilføjet hash (sha) til password inden det gemmes. (Hashing.sha)
                     + "', '"
                     + user.getEmail()
                     + "', "
@@ -143,39 +143,51 @@ public class UserController {
   }
 
   // laver en funktion som kan logge en User ind.
-  public static String login(User user) throws SQLException {
+  public static String login (User user)  {
 
     if (dbCon == null) {
       dbCon = new DatabaseController();
     }
-    String sql = "SELECT * FROM user WHERE email = '" + user.getEmail() + "' AND password = '" + user.getPassword() + "'";
+    ResultSet resultSet;
+    User newUser;
+    String token = null;
 
-    ResultSet rs = dbCon.query(sql);
-    User foundUser = null;
     try {
-      // Loop through DB Data
-      while (rs.next()) {
-        foundUser =
-                new User(
-                        rs.getInt("id"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getString("password"),
-                        rs.getString("email"));
+      PreparedStatement loginUser = dbCon.getConnection().prepareStatement("SELECT * FROM user WHERE email = ? AND password = ?");
+
+      loginUser.setString(1,user.getEmail());
+      loginUser.setString(2,user.getPassword());
+
+      resultSet = loginUser.executeQuery();
+
+      if (resultSet.next()) {
+        newUser = new User(
+                resultSet.getInt("id"),
+                resultSet.getString("first_name"),
+                resultSet.getString("last_name"),
+                resultSet.getString("password"),
+                resultSet.getString("email"));
+
+        if (newUser != null) {
+          try {
+            Algorithm algorithm = Algorithm.HMAC256("secret");
+            token = JWT.create()
+                    .withClaim("userID", newUser.getId())
+                    .withIssuer("auth0")
+                    .sign(algorithm);
+          } catch (JWTCreationException ex) {
+          } finally {
+            return token;
+          }
+        }
+      }else{
+        System.out.print("No user found");
       }
-      try {
-        Algorithm algorithm = Algorithm.HMAC256("secret");
-        String token = JWT.create()
-                .withIssuer("auth0")
-                .withClaim("userId", foundUser.getId())
-                .sign(algorithm);
-        return token;
-      } catch (JWTCreationException exception) {
-        return "";
+        }catch (SQLException sqlEx){
+      sqlEx.printStackTrace();
       }
-    } catch (Exception e) {
-      return "";
-    }
+
+    return "";
   }
 
   /**
@@ -186,22 +198,33 @@ public class UserController {
   public static Boolean deleteUser(String token) {
 
     if (dbCon == null) {
-      dbCon = new DatabaseController(); //tjekker om der er connction til db eller laves der en
-
-    try {
-      DecodedJWT jwt = JWT.decode(token);
-      int id = jwt.getClaim("userId").asInt(); //tjekker om userid i brugeren er det samme som i token og sletter dermed brugeren.
-
-      String sql = "DELETE FROM user WHERE id= '" + id + "'";
-      dbCon.insert(sql);
-      return true;
-    } catch (JWTDecodeException exception) {
-      return null; //Invalid token
+      dbCon = new DatabaseController(); //tjekker om der er connection til db eller laves der en
     }
-  }
-  return false;
-}
+      try {
+        DecodedJWT jwt = JWT.decode(token);
+        int id = jwt.getClaim("userId").asInt(); //tjekker om userid i brugeren er det samme som i token og sletter dermed brugeren.
 
+        try {
+
+          PreparedStatement deleteUser = dbCon.getConnection().prepareStatement("DELETE FROM user WHERE id = ?");
+
+          deleteUser.setInt(1, id);
+
+          int rowsAffected = deleteUser.executeUpdate(); //eksekverer de updateringer user har foretager sig og gemmer i db.
+
+          if (rowsAffected == 1) { //returnerer hvis der er lavet ændringer.
+            return true;
+          }
+        } catch (SQLException sql) {
+          sql.printStackTrace();
+        }
+
+      } catch (JWTDecodeException ex) {
+        ex.printStackTrace();
+      }
+
+    return false;
+  }
   /**
    * Denne metode updaterer en user.
    * @param user
