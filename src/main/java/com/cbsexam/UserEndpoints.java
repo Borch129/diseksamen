@@ -108,24 +108,26 @@ public class UserEndpoints {
     // return Response.status(400).entity("Endpoint not implemented yet").build();
   }
 
-  // TODO: Make the system able to delete users (umiddelbart færdig)
+  // TODO: Make the system able to delete users (FIX)
   @DELETE
   @Path("/{token}")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response deleteUser(@PathParam("token") String token) {
 
-    Boolean deleted = UserController.deleteUser(token); //hvis boolean true / bruger er slettet i usercontroller så returneres hhv. status 200 eller 400 nedenunder
+    Boolean deleted = UserController.deleteUser(token);
 
     if(deleted) {
+      // Return a response with status 200 and JSON as type
       return Response.status(200).entity("User deleted").build();
-    }else {
-      return Response.status(400).entity("User not deleted").build();
+    } else {
+      return Response.status(400).entity("Something went wrong, user not deleted").build();
     }
   }
 
-  // TODO: Make the system able to update users (umiddelbart færdig)
+  // TODO: Make the system able to update users (FIX)
   @PUT
-  @Path("/{userId}/{token}")
+  @Path("/{idUser}/{token}")
+  @Consumes(MediaType.APPLICATION_JSON)
   public Response updateUser( @PathParam("token") String token, String body) {
 
     User user = new Gson().fromJson(body, User.class);
@@ -135,6 +137,6 @@ public class UserEndpoints {
     if (updated){
       return Response.status(200).entity("User is updated").build();
     }else
-    return Response.status(400).entity("Something went wrong, could not update user").build();
+      return Response.status(400).entity("Something went wrong, could not update user").build();
   }
 }

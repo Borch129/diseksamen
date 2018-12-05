@@ -23,7 +23,11 @@ public final class Config {
     private static long ORDER_TTL;
     private static long USER_TTL;
     private static String KEY;
+    private static String SALT;
 
+    public static String getSALT() {
+        return SALT;
+    }
     public static long getProductTtl() {
         return PRODUCT_TTL;
     }
@@ -118,5 +122,6 @@ public final class Config {
     ORDER_TTL = json.get("ORDER_TTL").getAsLong();
     USER_TTL = json.get("USER_TTL").getAsLong();
     KEY = json.get("KEY").getAsString();
+    SALT = json.get("SALT").getAsString();
   }
 }

@@ -190,47 +190,40 @@ public class UserController {
     return "";
   }
 
-  /**
-   * Denne metode sletter en bruger hvis at userid i brugertoken er den samme som det userid han vil slette og dermed sig selv.
-   * @param token
-   * @return
-   */
-  public static Boolean deleteUser(String token) {
 
-    if (dbCon == null) {
-      dbCon = new DatabaseController(); //tjekker om der er connection til db eller laves der en
+  public static Boolean deleteUser (String token) {
+
+    if(dbCon == null){
+      dbCon = new DatabaseController();
     }
-      try {
-        DecodedJWT jwt = JWT.decode(token);
-        int id = jwt.getClaim("userId").asInt(); //tjekker om userid i brugeren er det samme som i token og sletter dermed brugeren.
 
-        try {
+    try{
+      DecodedJWT jwt = JWT.decode(token);
+      int id = jwt.getClaim("userID").asInt();
 
-          PreparedStatement deleteUser = dbCon.getConnection().prepareStatement("DELETE FROM user WHERE id = ?");
+      try{
+        PreparedStatement deleteUser = dbCon.getConnection().prepareStatement("DELETE FROM user WHERE id = ?");
 
-          deleteUser.setInt(1, id);
+        deleteUser.setInt(1, id);
 
-          int rowsAffected = deleteUser.executeUpdate(); //eksekverer de updateringer user har foretager sig og gemmer i db.
+        int rowsAffected = deleteUser.executeUpdate();
 
-          if (rowsAffected == 1) { //returnerer hvis der er lavet ændringer.
-            return true;
-          }
-        } catch (SQLException sql) {
-          sql.printStackTrace();
+        if (rowsAffected == 1){
+          return true;
         }
 
-      } catch (JWTDecodeException ex) {
-        ex.printStackTrace();
+      } catch (SQLException sql){
+        sql.printStackTrace();
+
       }
+
+    } catch (JWTDecodeException ex) {
+      ex.printStackTrace();
+    }
 
     return false;
   }
-  /**
-   * Denne metode updaterer en user.
-   * @param user
-   * @param token
-   * @return
-   */
+
   public static Boolean updateUser(User user, String token){
 
     if (dbCon == null) {
@@ -238,11 +231,12 @@ public class UserController {
     }
     try{
       DecodedJWT jwt = JWT.decode(token); //trækker userId ud af token og den sættes til en int, så han kun kan ændre sin egen profil med tilsvarende userId i db
-      int id = jwt.getClaim("userId").asInt();
+      int id = jwt.getClaim("userID").asInt();
 
       try {
-        PreparedStatement updateUser = dbCon.getConnection().prepareStatement("UPDATE user SET" +
+        PreparedStatement updateUser = dbCon.getConnection().prepareStatement("UPDATE user SET " +
                 "first_name = ?, last_name = ?, password = ?, email = ? WHERE id=? "); //laver en sql statement, så man kan ændre i sine data
+
         updateUser.setString(1, user.getFirstname());
         updateUser.setString(2, user.getLastname());
         updateUser.setString(3, user.getPassword());
@@ -251,7 +245,7 @@ public class UserController {
 
         int rowsAffected = updateUser.executeUpdate(); //eksekverer de updateringer user har foretager sig og gemmer i db.
 
-        if (rowsAffected == 1){ //returnerer hvis der er lavet ændringer.
+        if (rowsAffected == 1){ //returnerer hvis der er lavet ændringer i 1 eller flere linjer
           return true;
         }
 

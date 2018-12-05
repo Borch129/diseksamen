@@ -7,15 +7,13 @@ import org.bouncycastle.util.encoders.Hex;
 
 public final class Hashing {
 
-  static String mitHash = "Hash";
-
-  // TODO: You should add a salt and make this secure (umiddelbart færdig)
+  // TODO: You should add a salt and make this secure (FIX)
   public static String md5(String rawString) {
     try {
 
       // We load the hashing algoritm we wish to use.
       MessageDigest md = MessageDigest.getInstance("MD5");
-      rawString = rawString + mitHash; //random dato/tid når man laver en bruger som giver en unik salt til koden. Kan dog ske at to laver bruger på samme millisekund...
+
 
       // We convert to byte array
       byte[] byteArray = md.digest(rawString.getBytes());
@@ -39,13 +37,17 @@ public final class Hashing {
 
     return null;
   }
+  public static String myMd5Hash (String string){  //laver en metode der tager et "random" salt fra config.json og tilsætter det til min string
+    String salt = Config.getSALT(); //laver en getter på mit "random" salt
+    String saltedString = salt + string; //tilsætter det til min string så det hashes
+    return md5(saltedString); //returnere min hashede string, så den umiddelbart ikke kan læses
+  }
 
   // TODO: You should add a salt and make this secure (FIX)
   public static String sha(String rawString) {
     try {
       // We load the hashing algoritm we wish to use.
       MessageDigest digest = MessageDigest.getInstance("SHA-256");
-      rawString = rawString + mitHash; //random dato/tid når man laver en bruger som giver en unik salt til koden. Kan dog ske at to laver bruger på samme millisekund..
 
       // We convert to byte array
       byte[] hash = digest.digest(rawString.getBytes(StandardCharsets.UTF_8));
@@ -61,6 +63,12 @@ public final class Hashing {
     }
 
     return rawString;
+  }
+
+  public static String myShaHash(String string){ //samme metode som til md5 salt bare lavet til sha
+    String salt = Config.getSALT();
+    String saltedString = salt + string;
+    return sha(saltedString);
   }
 
 }
