@@ -2,6 +2,7 @@ package utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +29,7 @@ public final class Config {
     public static String getSALT() {
         return SALT;
     }
+
     public static long getProductTtl() {
         return PRODUCT_TTL;
     }
@@ -85,43 +87,43 @@ public final class Config {
     }
 
 
-  public static void initializeConfig() throws IOException {
+    public static void initializeConfig() throws IOException {
 
-    // Init variables to parse JSON
-    JsonObject json;
-    JsonParser parser = new JsonParser();
+        // Init variables to parse JSON
+        JsonObject json;
+        JsonParser parser = new JsonParser();
 
-    // Read File and store input
-    InputStream input = Config.class.getResourceAsStream("/config.json");
-    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        // Read File and store input
+        InputStream input = Config.class.getResourceAsStream("/config.json");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 
-    // Go through the lines one by one
-    StringBuffer stringBuffer = new StringBuffer();
-    String str;
+        // Go through the lines one by one
+        StringBuffer stringBuffer = new StringBuffer();
+        String str;
 
-    // Read file one line at a time
-    while ((str = reader.readLine()) != null) {
-      stringBuffer.append(str);
+        // Read file one line at a time
+        while ((str = reader.readLine()) != null) {
+            stringBuffer.append(str);
+        }
+
+        // Konverterer json til variabler ved at typecaste til JsonObject
+        json = (JsonObject) parser.parse(stringBuffer.toString());
+
+        // Hiv teksten ud og sæt klassens variable til senere brug
+        DATABASE_HOST = json.get("DATABASE_HOST").toString().replace("\"", "");
+        DATABASE_PORT = Integer.parseInt(json.get("DATABASE_PORT").toString().replace("\"", ""));
+        DATABASE_USERNAME = json.get("DATABASE_USERNAME").toString().replace("\"", "");
+        DATABASE_PASSWORD = json.get("DATABASE_PASSWORD").toString().replace("\"", "");
+        DATABASE_NAME = json.get("DATABASE_NAME").toString().replace("\"", "");
+        ENCRYPTION = json.get("ENCRYPTION").getAsBoolean();
+        SOLR_HOST = json.get("SOLR_HOST").toString().replace("\"", "");
+        SOLR_PORT = Integer.parseInt(json.get("SOLR_PORT").toString().replace("\"", ""));
+        SOLR_PATH = json.get("SOLR_PATH").toString().replace("\"", "");
+        SOLR_CORE = json.get("SOLR_CORE").toString().replace("\"", "");
+        PRODUCT_TTL = json.get("PRODUCT_TTL").getAsLong();
+        ORDER_TTL = json.get("ORDER_TTL").getAsLong();
+        USER_TTL = json.get("USER_TTL").getAsLong();
+        KEY = json.get("KEY").getAsString();
+        SALT = json.get("SALT").getAsString();
     }
-
-    // Konverterer json til variabler ved at typecaste til JsonObject
-    json = (JsonObject) parser.parse(stringBuffer.toString());
-
-    // Hiv teksten ud og sæt klassens variable til senere brug
-    DATABASE_HOST = json.get("DATABASE_HOST").toString().replace("\"", "");
-    DATABASE_PORT = Integer.parseInt(json.get("DATABASE_PORT").toString().replace("\"", ""));
-    DATABASE_USERNAME = json.get("DATABASE_USERNAME").toString().replace("\"", "");
-    DATABASE_PASSWORD = json.get("DATABASE_PASSWORD").toString().replace("\"", "");
-    DATABASE_NAME = json.get("DATABASE_NAME").toString().replace("\"", "");
-    ENCRYPTION = json.get("ENCRYPTION").getAsBoolean();
-    SOLR_HOST = json.get("SOLR_HOST").toString().replace("\"", "");
-    SOLR_PORT = Integer.parseInt(json.get("SOLR_PORT").toString().replace("\"", ""));
-    SOLR_PATH = json.get("SOLR_PATH").toString().replace("\"", "");
-    SOLR_CORE = json.get("SOLR_CORE").toString().replace("\"", "");
-    PRODUCT_TTL = json.get("PRODUCT_TTL").getAsLong();
-    ORDER_TTL = json.get("ORDER_TTL").getAsLong();
-    USER_TTL = json.get("USER_TTL").getAsLong();
-    KEY = json.get("KEY").getAsString();
-    SALT = json.get("SALT").getAsString();
-  }
 }

@@ -2,29 +2,29 @@ package utils;
 
 public final class Encryption {
 
-  public static String encryptDecryptXOR(String rawString) {
+    public static String encryptDecryptXOR(String rawString) {
 
-    // If encryption is enabled in Config.
-    if (Config.getEncryption()) {
+        // If encryption is enabled in Config.
+        if (Config.getEncryption()) {
 
-      // The key is predefined and hidden in code
-      // TODO: Create a more complex code and store it somewhere better (FIX)
-      char[] key = Config.getKey().toCharArray();
+            // The key is predefined and hidden in code
+            // TODO: Create a more complex code and store it somewhere better (FIX)
+            char[] key = Config.getKey().toCharArray();
 
-      // Stringbuilder enables you to play around with strings and make useful stuff
-      StringBuilder thisIsEncrypted = new StringBuilder();
+            // Stringbuilder enables you to play around with strings and make useful stuff
+            StringBuilder thisIsEncrypted = new StringBuilder();
 
-      // TODO: This is where the magic of XOR is happening. Are you able to explain what is going on? (FIX, beskrives i rapporten)
-      for (int i = 0; i < rawString.length(); i++) {
-        thisIsEncrypted.append((char) (rawString.charAt(i) ^ key[i % key.length]));
-      }
+            // TODO: This is where the magic of XOR is happening. Are you able to explain what is going on? (FIX, beskrives i rapporten)
+            for (int i = 0; i < rawString.length(); i++) {
+                thisIsEncrypted.append((char) (rawString.charAt(i) ^ key[i % key.length]));
+            }
 
-      // We return the encrypted string
-      return thisIsEncrypted.toString();
+            // We return the encrypted string
+            return thisIsEncrypted.toString();
 
-    } else {
-      // We return without having done anything
-      return rawString;
+        } else {
+            // We return without having done anything
+            return rawString;
+        }
     }
-  }
 }
