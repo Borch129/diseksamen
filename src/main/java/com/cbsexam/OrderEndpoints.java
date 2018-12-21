@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import model.Order;
+import utils.Encryption;
 
 @Path("order")
 public class OrderEndpoints {
@@ -32,11 +33,11 @@ public class OrderEndpoints {
         // Call our controller-layer in order to get the order from the DB
         Order order = OrderController.getOrder(idOrder);
 
-        // TODO: Add Encryption to JSON (FIX, men udkommenteret)
+        // TODO: Add Encryption to JSON (FIX)
         // We convert the java object to json with GSON library imported in Maven
         String json = new Gson().toJson(order);
 
-        //json = Encryption.encryptDecryptXOR(json);
+        json = Encryption.encryptDecryptXOR(json);
 
         // Return a response with status 200 and JSON as type
         return Response.status(200).type(MediaType.APPLICATION_JSON).entity(json).build();
@@ -52,10 +53,10 @@ public class OrderEndpoints {
         //Kalder ordercache-layer vi har lavet, da dette optimere vores kald.
         ArrayList<Order> orders = orderCache.getOrders(false);
 
-        // TODO: Add Encryption to JSON (FIX, men udkommenteret)
+        // TODO: Add Encryption to JSON (FIX)
         // We convert the java object to json with GSON library imported in Maven
         String json = new Gson().toJson(orders);
-        // json = Encryption.encryptDecryptXOR(json); //skal udkommenteres
+        json = Encryption.encryptDecryptXOR(json);
 
         // Return a response with status 200 and JSON as type
         return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).entity(json).build();
